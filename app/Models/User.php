@@ -4,8 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class User extends Authenticatable
 {
@@ -43,5 +47,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function role():HasOne
+    {
+        return $this->hasOne(Role::class);
+    }
+
+    public function vacations() : HasMany
+    {
+        return $this->hasMany(Vacation::class);
+    }
+
+    public function projects():BelongsToMany
+    {
+        return $this->belongsToMany(Project::class)
+            ->withPivot('position_id', 'start_date', 'end_date')
+            ->withTimestamps();
+    }
+
+    public function positions():BelongsToMany
+    {
+        return $this->belongsToMany(Position::class)
+            ->withPivot('project_id', 'start_date', 'end_date')
+            ->withTimestamps();
     }
 }
