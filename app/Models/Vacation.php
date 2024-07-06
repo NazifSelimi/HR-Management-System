@@ -16,6 +16,16 @@ class Vacation extends Model
         'status',
     ];
 
+    public function casts(): array
+    {
+        return [
+            'start_date' => 'datetime',
+            'end_date' => 'datetime',
+            'status' => 'boolean',
+        ];
+
+    }
+
     public function users() : HasOne
     {
         return $this->hasOne(User::class);
