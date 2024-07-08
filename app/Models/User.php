@@ -67,14 +67,14 @@ class User extends Authenticatable
 
     public function projects():BelongsToMany
     {
-        return $this->belongsToMany(Project::class)
+        return $this->belongsToMany(Project::class, 'positions_projects_users')
             ->withPivot('position_id', 'start_date', 'end_date')
             ->withTimestamps();
     }
 
     public function positions():BelongsToMany
     {
-        return $this->belongsToMany(Position::class)
+        return $this->belongsToMany(Position::class, 'positions_projects_users')
             ->withPivot('project_id', 'start_date', 'end_date')
             ->withTimestamps();
     }
