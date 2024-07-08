@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
+use App\Models\Project;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $this->projectService->getProjects();
+        return $this->projectService->getProjects();
     }
 
     /**
@@ -33,12 +34,12 @@ class ProjectController extends Controller
      */
     public function store(ProjectRequest $request)
     {
-        try{
-            $this->projectService->create($request);
-
+         try{
+            $this->projectService->create($request->validated());
+            return true;
         }
         catch (\Exception $e){
-            abort(500, $e->getMessage() );
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -61,9 +62,15 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProjectRequest $request, Project $project)
     {
-        //
+        try{
+            $this->projectService->update($request->validated(), $project);
+            return true;
+        }
+        catch (\Exception $e){
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
