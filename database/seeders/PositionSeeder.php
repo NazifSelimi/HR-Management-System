@@ -18,7 +18,7 @@ class PositionSeeder extends Seeder
             ['name' => 'Frontend Developer', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Backend Developer', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Full Stack Developer', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Quality Assurance (QA) Engineer', 'project_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Quality Assurance (QA) Engineer', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'DevOps Engineer', 'created_at' => now(), 'updated_at' => now()],
 
             // IT Support and Services DepartmentService (DepartmentService ID 2)
