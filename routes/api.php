@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,4 +16,5 @@ Route::post('/projects', [ProjectController::class, 'store']);
 Route::get('/projects/get', [ProjectController::class, 'index']);
 Route::put('/projects/update/{project}', [ProjectController::class, 'update']);
 Route::delete('/projects/delete/{project}', [ProjectController::class, 'destroy']);
+Route::resource('/users', UserController::class);
 
