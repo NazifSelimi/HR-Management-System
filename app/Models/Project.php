@@ -24,14 +24,14 @@ class  Project extends Model
 
     public function positions():BelongsToMany
     {
-        return $this->belongsToMany(Project::class)
+        return $this->belongsToMany(Project::class, 'positions_projects_users')
             ->withPivot('user_id', 'start_date', 'end_date')
             ->withTimestamps();
     }
 
     public function users():BelongsToMany
     {
-        return $this->belongsToMany(User::class)
+        return $this->belongsToMany(User::class, 'positions_projects_users')
             ->withPivot('position_id', 'start_date', 'end_date')
             ->withTimestamps();
     }

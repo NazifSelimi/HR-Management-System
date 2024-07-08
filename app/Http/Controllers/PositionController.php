@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProjectRequest;
-use App\Models\Project;
-use App\Services\ProjectService;
+use App\Http\Requests\PositionRequest;
+use App\Models\Position;
+use App\Services\PositionService;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class PositionController extends Controller
 {
+    protected $positionService;
 
-    protected $projectService;
-    public function __construct()
+    public function __construct(PositionService $positionService)
     {
-        $this->projectService = new ProjectService();
+        $this->positionService = $positionService;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        return $this->projectService->getProjects();
+        return $this->positionService->getPositions();
     }
 
     /**
@@ -32,23 +35,24 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProjectRequest $request)
+    public function store(PositionRequest $request)
     {
         try{
-            $this->projectService->create($request->validated());
-            return true;
+            $this->positionService->create($request->validated());
+            return $request;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
         }
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Position $position)
     {
-        return $project;
+        return $position;
     }
 
     /**
@@ -62,11 +66,11 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProjectRequest $request, Project $project)
+    public function update(PositionRequest $request, Position $position)
     {
         try{
-            $this->projectService->update($request->validated(), $project);
-            return true;
+            $this->positionService->update($request->validated(), $position);
+            return $position;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
@@ -76,9 +80,9 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy(Position $position)
     {
-        $this->projectService->delete($project);
+        $this->positionService->delete($position);
         return true;
     }
 }

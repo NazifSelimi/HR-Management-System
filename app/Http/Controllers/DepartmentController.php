@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProjectRequest;
-use App\Models\Project;
-use App\Services\ProjectService;
+use App\Http\Requests\DepartmentRequest;
+use App\Models\Department;
+use App\Services\DepartmentService;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class DepartmentController extends Controller
 {
-
-    protected $projectService;
+    protected $departmentService;
     public function __construct()
     {
-        $this->projectService = new ProjectService();
+        $this->departmentService=new DepartmentService();
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        return $this->projectService->getProjects();
+        return $this->departmentService->getDepartments();
     }
 
     /**
@@ -32,11 +34,11 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProjectRequest $request)
+    public function store(DepartmentRequest $request)
     {
         try{
-            $this->projectService->create($request->validated());
-            return true;
+            $this->departmentService->create($request->validated());
+            return $request;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
@@ -46,9 +48,9 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Department $department)
     {
-        return $project;
+        return $department;
     }
 
     /**
@@ -62,11 +64,11 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProjectRequest $request, Project $project)
+    public function update(DepartmentRequest $request, Department $department)
     {
         try{
-            $this->projectService->update($request->validated(), $project);
-            return true;
+            $this->departmentService->update($request->validated(), $department);
+            return $department;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
@@ -76,9 +78,9 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy(Department $department)
     {
-        $this->projectService->delete($project);
+        $this->departmentService->delete($department);
         return true;
     }
 }

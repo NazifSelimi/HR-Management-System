@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -10,11 +12,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::resource('projects', ProjectController::class);
+Route::resource('departments', DepartmentController::class);
+Route::resource('positions', PositionController::class);
+
 Route::middleware(['startSession'])->post('/login', [AuthenticatedSessionController::class, 'store']);
-
-Route::post('/projects', [ProjectController::class, 'store']);
-Route::get('/projects/get', [ProjectController::class, 'index']);
-Route::put('/projects/update/{project}', [ProjectController::class, 'update']);
-Route::delete('/projects/delete/{project}', [ProjectController::class, 'destroy']);
 Route::resource('/users', UserController::class);
-

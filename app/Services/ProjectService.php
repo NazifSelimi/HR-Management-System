@@ -32,7 +32,7 @@ class ProjectService
 
     }
 
-    public function update($data, Project $project)
+    public function update($data, $project)
     {
         DB::beginTransaction();
 
@@ -49,7 +49,7 @@ class ProjectService
         }
     }
 
-    public function delete(Project $project)
+    public function delete($project)
     {
         $project->delete();
     }
