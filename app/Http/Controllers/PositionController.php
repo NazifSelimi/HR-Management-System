@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DepartmentRequest;
-use App\Models\Department;
-use App\Services\DepartmentService;
+use App\Http\Requests\PositionRequest;
+use App\Models\Position;
+use App\Services\PositionService;
 use Illuminate\Http\Request;
 
-class DepartmentController extends Controller
+class PositionController extends Controller
 {
-    protected $departmentService;
-    public function __construct()
+    protected $positionService;
+
+    public function __construct(PositionService $positionService)
     {
-        $this->departmentService=new DepartmentService();
+        $this->positionService = $positionService;
     }
 
     /**
@@ -20,7 +21,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return $this->departmentService->getDepartments();
+        return $this->positionService->getPositions();
     }
 
     /**
@@ -34,23 +35,24 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DepartmentRequest $request)
+    public function store(PositionRequest $request)
     {
         try{
-            $this->departmentService->create($request->validated());
+            $this->positionService->create($request->validated());
             return $request;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
         }
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Department $department)
+    public function show(Position $position)
     {
-        return $department;
+        return $position;
     }
 
     /**
@@ -64,11 +66,11 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DepartmentRequest $request, Department $department)
+    public function update(PositionRequest $request, Position $position)
     {
         try{
-            $this->departmentService->update($request->validated(), $department);
-            return $department;
+            $this->positionService->update($request->validated(), $position);
+            return $position;
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
@@ -78,9 +80,9 @@ class DepartmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Department $department)
+    public function destroy(Position $position)
     {
-        $this->departmentService->delete($department);
+        $this->positionService->delete($position);
         return true;
     }
 }
