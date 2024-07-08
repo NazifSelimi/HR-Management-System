@@ -49,6 +49,11 @@ class ProjectService
         }
     }
 
+    public function delete(Project $project)
+    {
+        $project->delete();
+    }
+
 
 
 }
