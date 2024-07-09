@@ -18,6 +18,7 @@ class ProjectService
     public function create($data)
     {
             $project = new Project($data);
+            $project->save();
             if($project->id)
             {
                 return true;

@@ -37,7 +37,7 @@ class ProjectController extends Controller
     {
         try{
             $this->projectService->create($request->validated());
-            return response('Project created successfully', 201);
+            return response(['message' => 'Project created successfully'], 201);
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
