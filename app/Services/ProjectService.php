@@ -17,16 +17,12 @@ class ProjectService
 
     public function create($data)
     {
-        DB::beginTransaction();
             $project = new Project($data);
-            $project->save();
             if($project->id)
             {
-                DB::commit();
                 return true;
             }
             else{
-                DB::rollBack();
                 throw new \Exception("Project not created");
             }
 
@@ -34,17 +30,13 @@ class ProjectService
 
     public function update($data, $project)
     {
-        DB::beginTransaction();
 
         if($project->id)
         {
             $project->update($data);
-            $project->save();
-            DB::commit();
             return true;
         }
         else{
-            DB::rollBack();
             throw new \Exception("Project not updated or does not exist");
         }
     }

@@ -12,18 +12,20 @@ class DepartmentService
         return Department::all();
     }
 
+    public function getDepartmentById($id)
+    {
+        return Department::query()->find($id);
+    }
+
     public function create($data)
     {
-        DB::beginTransaction();
         $department = new Department($data);
         $department->save();
         if($department->id)
         {
-            DB::commit();
             return true;
         }
         else{
-            DB::rollBack();
             throw new \Exception("Department not created");
         }
 
@@ -31,17 +33,12 @@ class DepartmentService
 
     public function update($data, $department)
     {
-        DB::beginTransaction();
-
         if($department->id)
         {
             $department->update($data);
-            $department->save();
-            DB::commit();
             return true;
         }
         else{
-            DB::rollBack();
             throw new \Exception("Department not updated or does not exist");
         }
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use App\Services\ProjectService;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -36,7 +37,7 @@ class ProjectController extends Controller
     {
         try{
             $this->projectService->create($request->validated());
-            return true;
+            return response('Project created successfully', 201);
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
@@ -66,7 +67,9 @@ class ProjectController extends Controller
     {
         try{
             $this->projectService->update($request->validated(), $project);
-            return true;
+            return \response()->json([
+                'message' => "Project updated successfully",
+            ]);
         }
         catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
