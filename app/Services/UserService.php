@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\throwException;
@@ -16,16 +17,9 @@ class UserService
     }
     public function create($data)
     {
-        DB::beginTransaction();
         $user = new User($data);
         $user->save();
-        if($user->id){
-            DB::commit();
-            return true;
-        }else{
-            DB::rollBack();
-            throw new \Exception("User could not be crated, please try again !!!");
-        }
+        return $user;
     }
 
     public function getUser($userId)
@@ -35,15 +29,34 @@ class UserService
 
     public function updateUser($data, $user)
     {
-
-        $user = User::query()->find($user->id);
         return $user->update($data);
-
 
     }
 
     public function deleteUser(User $user)
     {
         $user->delete();
+    }
+
+    public function getRoles()
+    {
+        return Role::all();
+    }
+
+    public function createRole($data){
+        $role = new Role($data);
+        $role->save();
+        return $role;
+    }
+    public function updateRole($data, $role){
+        return $role->update($data);
+    }
+    public function deleteRole(Role $role){
+        $role->delete();
+    }
+
+    public function getRole($roleId)
+    {
+        return Role::query()->find($roleId);
     }
 }

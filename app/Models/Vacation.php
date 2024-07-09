@@ -14,6 +14,7 @@ class Vacation extends Model
         'start_date',
         'end_date',
         'status',
+        'user_id'
     ];
 
     public function casts(): array
