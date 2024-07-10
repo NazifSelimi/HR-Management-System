@@ -17,29 +17,15 @@ class ProjectService
 
     public function create($data)
     {
-            $project = new Project($data);
-            $project->save();
-            if($project->id)
-            {
-                return true;
-            }
-            else{
-                throw new \Exception("Project not created");
-            }
-
+        $project = new Project($data);
+        $project->save();
+        return $project;
     }
 
     public function update($data, $project)
     {
-
-        if($project->id)
-        {
-            $project->update($data);
-            return true;
-        }
-        else{
-            throw new \Exception("Project not updated or does not exist");
-        }
+        $project->update($data);
+        return $project;
     }
 
     public function delete($project)

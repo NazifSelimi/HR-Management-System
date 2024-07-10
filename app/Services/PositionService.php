@@ -16,27 +16,13 @@ class PositionService
     {
         $position = new Position($data);
         $position->save();
-        if($position->id)
-        {
-            return true;
-        }
-        else{
-            throw new \Exception("Position not created");
-        }
-
+        return $position;
     }
 
     public function update($data, $position)
     {
-
-        if($position->id)
-        {
-            $position->update($data);
-            return true;
-        }
-        else{
-            throw new \Exception("Position not updated or does not exist");
-        }
+        $position->update($data);
+        return $position;
     }
 
     public function delete($position)

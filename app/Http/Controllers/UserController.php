@@ -38,11 +38,13 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         try{
-           return $this->userService->create($request->validated());
-
+           $this->userService->create($request->validated());
+            return response()->json([
+                'message' => "User created successfully",
+            ],201);
         }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while creating the user' ], 500);
         }
     }
 
@@ -72,11 +74,11 @@ class UserController extends Controller
     {
         try{
             $this->userService->updateUser($request->validated() ,$user);
-            return response()->json($user, 200);
-        }catch (ModelNotFoundException $e){
+            return response(['message' => 'User updated successfully'], 201);
+        }catch (ModelNotFoundException){
             return response()->json(['message' =>'User not found.'], 404);
         }
-        catch (\Exception $e){
+        catch (\Exception){
             return response()->json([ 'message' => 'An error occurred while updating the user' ], 500);
         }
 
@@ -88,6 +90,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $this->userService->deleteUser($user);
-        return response()->json([$user, 'message'=>'User deleted successfully !'], 200);
+        return response()->json([$user, 'message'=>'User deleted successfully !'], 204);
     }
 }

@@ -37,7 +37,13 @@ class VacationController extends Controller
      */
     public function store(VacationRequest $request)
     {
-       return $this->vacationService->requestVacation($request->validated());
+        try{
+            $this->vacationService->requestVacation($request->validated());
+            return response(['message' => 'Vacation requested successfully'], 201);
+        }
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while requesting the position' ], 500);
+        }
     }
 
     /**
@@ -63,10 +69,15 @@ class VacationController extends Controller
     {
         try {
             $this->vacationService->updateVacation($request->validated(),$vacation);
-            return response()->json($vacation, 200);
+            return response()->json([
+                'message' => "Vacation updated successfully",
+            ],201);
         }
-        catch (ModelNotFoundException $e){
+        catch (ModelNotFoundException){
             return response()->json(['message' =>'Vacation not found.'], 404);
+        }
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while updating the vacation' ], 500);
         }
 
     }
@@ -77,7 +88,6 @@ class VacationController extends Controller
     public function destroy(Vacation $vacation)
     {
         $this->vacationService->deleteVacation($vacation);
-        return response()->json([$vacation, 'message'=>'Vacation deleted successfully !'], 200);
-
+        return response()->json([$vacation, 'message'=>'Vacation deleted successfully!'], 204);
     }
 }

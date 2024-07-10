@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -38,10 +39,12 @@ class DepartmentController extends Controller
     {
         try{
             $this->departmentService->create($request->validated());
-            return $request;
+            return response()->json([
+                'message' => "Department created successfully",
+            ],201);
         }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while creating the department' ], 500);
         }
     }
 
@@ -68,10 +71,12 @@ class DepartmentController extends Controller
     {
         try{
             $this->departmentService->update($request->validated(), $department);
-            return $department;
+            return response(['message' => 'Department updated successfully'], 201);
+        }catch (ModelNotFoundException){
+            return response()->json(['message' =>'Department not found.'], 404);
         }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while updating the department' ], 500);
         }
     }
 
@@ -81,6 +86,6 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         $this->departmentService->delete($department);
-        return true;
+        return response()->json([$department, 'message'=>'User deleted successfully !'], 204);
     }
 }
