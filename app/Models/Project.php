@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class  Project extends Model
@@ -17,22 +16,13 @@ class  Project extends Model
         'department_id'
     ];
 
-    public function department(): BelongsTo
+    public function department(): BelongsToMany
     {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function positions():BelongsToMany
-    {
-        return $this->belongsToMany(Project::class, 'positions_projects_users')
-            ->withPivot('user_id', 'start_date', 'end_date')
-            ->withTimestamps();
+        return $this->belongsToMany(Department::class, 'departments_projects');
     }
 
     public function users():BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'positions_projects_users')
-            ->withPivot('position_id', 'start_date', 'end_date')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'projects_users');
     }
 }

@@ -3,23 +3,23 @@
 namespace App\Services;
 
 
-use App\Models\Vacation;
+use App\Models\DaysOff;
 
 class VacationService
 {
     public function getVacations()
     {
-        return Vacation::all();
+        return DaysOff::all();
 
     }
 
     public function getVacation(string $id)
     {
-        return Vacation::query()->where('id', $id)->first();
+        return DaysOff::query()->where('id', $id)->first();
     }
     public function getVacationsByUser(string $userId)
     {
-        return Vacation::query()->where('user_id', $userId)->get();
+        return DaysOff::query()->where('user_id', $userId)->get();
     }
 
     public function updateVacation($data, $vacation)
@@ -29,14 +29,14 @@ class VacationService
 
     }
 
-    public function deleteVacation(Vacation $vacation)
+    public function deleteVacation(DaysOff $vacation)
     {
         return $vacation->delete();
     }
 
     public function requestVacation($data)
     {
-        $vacation = new Vacation($data);
+        $vacation = new DaysOff($data);
         $vacation->save();
         return $vacation;
     }

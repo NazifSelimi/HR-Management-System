@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\VacationRequest;
-use App\Models\Vacation;
+use App\Models\DaysOff;
 use App\Services\VacationService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -59,14 +59,14 @@ class VacationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(VacationRequest $request, Vacation $vacation)
+    public function update(VacationRequest $request, DaysOff $vacation)
     {
         try {
             $this->vacationService->updateVacation($request->validated(),$vacation);
             return response()->json($vacation, 200);
         }
         catch (ModelNotFoundException $e){
-            return response()->json(['message' =>'Vacation not found.'], 404);
+            return response()->json(['message' =>'DaysOff not found.'], 404);
         }
 
     }
@@ -74,10 +74,10 @@ class VacationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vacation $vacation)
+    public function destroy(DaysOff $vacation)
     {
         $this->vacationService->deleteVacation($vacation);
-        return response()->json([$vacation, 'message'=>'Vacation deleted successfully !'], 200);
+        return response()->json([$vacation, 'message'=>'DaysOff deleted successfully !'], 200);
 
     }
 }

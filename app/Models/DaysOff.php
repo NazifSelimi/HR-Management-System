@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Vacation extends Model
+class DaysOff extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'start_date',
         'end_date',
+        'reason',
+        'type',
         'status',
-        'user_id'
+
     ];
 
     public function casts(): array
@@ -27,8 +30,8 @@ class Vacation extends Model
 
     }
 
-    public function users() : HasOne
+    public function users() : BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 }

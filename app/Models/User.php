@@ -30,7 +30,8 @@ class User extends Authenticatable
         'address',
         'email',
         'password',
-        'role_id'
+        'role', // string ADMIN USER HR_ADMIN
+        'days_off',
     ];
 
     /**
@@ -56,32 +57,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function role():HasOne
-    {
-        return $this->hasOne(Role::class);
-    }
 
-    public function vacations() : HasMany
+    public function daysOff() : HasMany
     {
-        return $this->hasMany(Vacation::class);
+        return $this->hasMany(DaysOff::class);
     }
 
     public function projects():BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'positions_projects_users')
-            ->withPivot('position_id', 'start_date', 'end_date')
-            ->withTimestamps();
+        return $this->belongsToMany(Project::class, 'projects_users');
     }
 
-    public function positions():BelongsToMany
+    public function departments():BelongsToMany
     {
-        return $this->belongsToMany(Position::class, 'positions_projects_users')
-            ->withPivot('project_id', 'start_date', 'end_date')
-            ->withTimestamps();
-    }
-
-    public function departments():BelongsTo
-    {
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department::class, 'departments_users');
     }
 }
