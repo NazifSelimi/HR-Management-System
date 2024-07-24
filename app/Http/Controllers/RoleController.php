@@ -40,14 +40,12 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         try {
-            $role = $this->userService->createRole($request->validated());
-            return response()->json([$role, 'message'=>'Role Created successfully !'], 200);
-        }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+            $this->userService->createRole($request->validated());
+            return response(['message' => 'Role created successfully'], 201);
+        } catch (\Exception) {
+            return response()->json(['message' => 'An error occurred while creating the role'], 500);
         }
     }
-
     /**
      * Display the specified resource.
      */
@@ -71,12 +69,15 @@ class RoleController extends Controller
     {
         try {
             $this->userService->updateRole($request->validated(), $role);
-
-        }catch (ModelNotFoundException $e){
+            return response()->json([
+                'message' => "Role updated successfully",
+            ],201);
+        }
+        catch (ModelNotFoundException){
             return response()->json(['message' =>'Role not found.'], 404);
         }
-        catch (\Exception $e){
-            return response()->json([ 'message' => 'An error occurred while updating the Role' ], 500);
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while updating the role' ], 500);
         }
     }
 
@@ -86,7 +87,6 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         $this->userService->deleteRole($role);
-        return response()->json([$role, 'message'=>'Role deleted successfully !'], 200);
-
+        return response()->json([$role, 'message'=>'Role deleted successfully!'], 204);
     }
 }

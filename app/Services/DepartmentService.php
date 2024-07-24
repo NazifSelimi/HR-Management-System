@@ -21,26 +21,13 @@ class DepartmentService
     {
         $department = new Department($data);
         $department->save();
-        if($department->id)
-        {
-            return true;
-        }
-        else{
-            throw new \Exception("Department not created");
-        }
-
+        return $department;
     }
 
     public function update($data, $department)
     {
-        if($department->id)
-        {
-            $department->update($data);
-            return true;
-        }
-        else{
-            throw new \Exception("Department not updated or does not exist");
-        }
+        $department->update($data);
+        return $department;
     }
 
     public function delete($department)

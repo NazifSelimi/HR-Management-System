@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PositionRequest;
 use App\Models\Position;
 use App\Services\PositionService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class PositionController extends Controller
@@ -39,10 +40,12 @@ class PositionController extends Controller
     {
         try{
             $this->positionService->create($request->validated());
-            return $request;
+            return \response()->json([
+                'message' => "Position created successfully",
+            ],201);
         }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while creating the position' ], 500);
         }
 
     }
@@ -70,10 +73,15 @@ class PositionController extends Controller
     {
         try{
             $this->positionService->update($request->validated(), $position);
-            return $position;
+            return \response()->json([
+                'message' => "Position updated successfully",
+            ],201);
         }
-        catch (\Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+        catch (ModelNotFoundException){
+            return response()->json(['message' =>'Position not found.'], 404);
+        }
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while updating the position' ], 500);
         }
     }
 
@@ -83,6 +91,6 @@ class PositionController extends Controller
     public function destroy(Position $position)
     {
         $this->positionService->delete($position);
-        return true;
+        return response()->json([$position, 'message'=>'Position deleted successfully !'], 204);
     }
 }

@@ -37,7 +37,13 @@ class VacationController extends Controller
      */
     public function store(VacationRequest $request)
     {
-       return $this->vacationService->requestVacation($request->validated());
+        try{
+            $this->vacationService->requestVacation($request->validated());
+            return response(['message' => 'Vacation requested successfully'], 201);
+        }
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while requesting the position' ], 500);
+        }
     }
 
     /**
@@ -59,14 +65,19 @@ class VacationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(VacationRequest $request, DaysOff $vacation)
+    public function update(VacationRequest $request, Vacation $vacation)
     {
         try {
             $this->vacationService->updateVacation($request->validated(),$vacation);
-            return response()->json($vacation, 200);
+            return response()->json([
+                'message' => "Vacation updated successfully",
+            ],201);
         }
-        catch (ModelNotFoundException $e){
-            return response()->json(['message' =>'DaysOff not found.'], 404);
+        catch (ModelNotFoundException){
+            return response()->json(['message' =>'Vacation not found.'], 404);
+        }
+        catch (\Exception){
+            return response()->json([ 'message' => 'An error occurred while updating the vacation' ], 500);
         }
 
     }
@@ -74,10 +85,9 @@ class VacationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DaysOff $vacation)
+    public function destroy(Vacation $vacation)
     {
         $this->vacationService->deleteVacation($vacation);
-        return response()->json([$vacation, 'message'=>'DaysOff deleted successfully !'], 200);
-
+        return response()->json([$vacation, 'message'=>'Vacation deleted successfully!'], 204);
     }
 }
