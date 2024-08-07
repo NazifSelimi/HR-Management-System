@@ -12,7 +12,7 @@ class ProjectService
 
     public function getProjects()
     {
-        return Project::all();
+        return Project::with('department')->get();
     }
 
     public function create($data)
@@ -24,8 +24,16 @@ class ProjectService
 
     public function update($data, $project)
     {
+        // Update project fields
         $project->update($data);
-        return $project;
+
+        // Update the departments if they are provided
+        if (isset($data['department_ids'])) {
+            $project->department()->sync($data['department_ids']); // Sync the department relationships
+        }
+
+        // Reload the project with its relationships for returning
+        return $project->load('department');
     }
 
     public function delete($project)

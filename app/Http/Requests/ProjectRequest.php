@@ -24,7 +24,6 @@ class ProjectRequest extends FormRequest
         return [
             'name' => ['required','string','max:80'],
             'description' => ['required','string','max:1000'],
-            'department_id' => ['required','exists:departments,id'],
         ];
     }
 }
