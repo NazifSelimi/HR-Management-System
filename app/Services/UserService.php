@@ -13,8 +13,14 @@ class UserService
 
     public function getEmployees()
     {
-        return User::query()->where("role_id", 2)->get();
+        return User::query()->where("role", 'employee')->get();
     }
+
+    public function getUsers()
+    {
+        return User::query()->get();
+    }
+
     public function create($data)
     {
         $user = new User($data);
@@ -22,7 +28,7 @@ class UserService
         return $user;
     }
 
-    public function getUser($userId)
+    public function getUserById($userId)
     {
         return User::query()->find($userId);
     }
@@ -33,30 +39,9 @@ class UserService
 
     }
 
-    public function deleteUser(User $user)
+    public function deleteUser($user)
     {
         $user->delete();
     }
 
-    public function getRoles()
-    {
-        return Role::all();
-    }
-
-    public function createRole($data){
-        $role = new Role($data);
-        $role->save();
-        return $role;
-    }
-    public function updateRole($data, $role){
-        return $role->update($data);
-    }
-    public function deleteRole(Role $role){
-        $role->delete();
-    }
-
-    public function getRole($roleId)
-    {
-        return Role::query()->find($roleId);
-    }
 }

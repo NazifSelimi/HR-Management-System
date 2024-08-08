@@ -19,7 +19,9 @@ Route::resource('departments', DepartmentController::class);
 Route::resource('positions', PositionController::class);
 
 Route::middleware(['startSession'])->post('/login', [AuthenticatedSessionController::class, 'store']);
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->except('destroy');
+Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
+Route::get('employees', [UserController::class, 'getEmployees']);
 Route::resource('roles', RoleController::class);
 Route::resource('vacations', VacationController::class);
 
