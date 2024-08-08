@@ -12,16 +12,23 @@ class ProjectService
 
     public function getProjects()
     {
-        return Project::with('department')->get();
+        return Project::with('departments')->get();
     }
 
-    public function create($data)
+    public function create(array $data): Project
     {
-        $project = new Project($data);
+        $project = new Project([
+            'name' => $data['name'],
+            'description' => $data['description'],
+        ]);
+
         $project->save();
+
+        // Attach departments to the project
+        $project->departments()->attach($data['department_ids']);
+
         return $project;
     }
-
     public function update($data, $project)
     {
         // Update project fields

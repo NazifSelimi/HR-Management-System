@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
-use App\Models\Project;
-use App\Services\ProjectService;
-use http\Env\Response;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use App\Services\ProjectService; // Ensure correct namespace
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
@@ -34,14 +32,16 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProjectRequest $request)
+    public function store(ProjectRequest $request): JsonResponse
     {
-        try{
+        try {
             $this->projectService->create($request->validated());
-            return response(['message' => 'Project created successfully'], 201);
-        }
-        catch (\Exception){
-            return response()->json([ 'message' => 'An error occurred while creating the position' ], 500);
+            return response()->json(['message' => 'Project created successfully'], Response::HTTP_CREATED);
+        } catch (\Throwable $e) {
+            // Log the exception message for debugging
+            \Log::error('Project creation failed: ' . $e->getMessage());
+
+            return response()->json(['message' => 'An error occurred while creating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

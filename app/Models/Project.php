@@ -5,22 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Department; // Ensure correct import
 
-class  Project extends Model
+class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'description',
     ];
 
-    public function department(): BelongsToMany
+    public function departments(): BelongsToMany // Pluralized method name
     {
         return $this->belongsToMany(Department::class, 'departments_projects');
     }
 
-    public function users():BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'projects_users');
     }

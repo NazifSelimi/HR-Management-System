@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'startSession' => \Illuminate\Session\Middleware\StartSession::class,
-//            'web' => \App\Http\Middleware\VerifyCsrfToken::class,
+            'web' => \App\Http\Middleware\VerifyCsrfToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
