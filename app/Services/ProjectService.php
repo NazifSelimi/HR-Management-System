@@ -45,7 +45,13 @@ class ProjectService
 
     public function delete($project)
     {
-        $project->delete();
+        try {
+            $project->delete();
+        } catch (\Exception $e) {
+            // Handle or log the exception
+            \Log::error('Error in ProjectService delete method: '.$e->getMessage());
+            throw $e; // Re-throw the exception to be caught in the controller
+        }
     }
 
 

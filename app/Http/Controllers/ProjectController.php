@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
+use App\Models\Project;
 use App\Services\ProjectService; // Ensure correct namespace
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
