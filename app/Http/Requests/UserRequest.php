@@ -29,7 +29,7 @@ class UserRequest extends FormRequest
             'address' => ['required', 'string'],
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role' => ['required', 'string'],
         ];
     }
 }
