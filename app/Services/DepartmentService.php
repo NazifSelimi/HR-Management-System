@@ -9,7 +9,7 @@ class DepartmentService
 {
     public function getDepartments()
     {
-        return Department::all();
+        return Department::query()->get();
     }
 
     public function getDepartmentById($id)
