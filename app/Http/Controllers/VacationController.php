@@ -65,7 +65,7 @@ class VacationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(VacationRequest $request, Vacation $vacation)
+    public function update(VacationRequest $request, DaysOff $vacation)
     {
         try {
             $this->vacationService->updateVacation($request->validated(),$vacation);
@@ -85,7 +85,7 @@ class VacationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vacation $vacation)
+    public function destroy(DaysOff $vacation)
     {
         $this->vacationService->deleteVacation($vacation);
         return response()->json([$vacation, 'message'=>'Vacation deleted successfully!'], 204);

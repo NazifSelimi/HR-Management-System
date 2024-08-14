@@ -15,6 +15,11 @@ class ProjectService
         return Project::with('departments')->get();
     }
 
+    public function getProject($id)
+    {
+        return Project::with(['departments', 'users.departments'])->find($id);
+    }
+
     public function create(array $data): Project
     {
         $project = new Project([

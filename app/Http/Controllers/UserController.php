@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use mysql_xdevapi\Exception;
 
 class UserController extends Controller
 {
@@ -59,7 +58,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $this->userService->getUserById($id);
+        return $this->userService->getUserById($id);
     }
 
     //Ask veton, pass a model Project $project and return $project

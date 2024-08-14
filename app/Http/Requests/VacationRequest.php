@@ -22,10 +22,12 @@ class VacationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date'=>['sometimes','required', 'date'],
-            'end_date'=>['sometimes','required', 'date'],
-            'status'=>['sometimes','required','boolean'],
-            'user_id' => ['sometimes','required', 'exists:users,id']
+            'start_date'=>['required', 'date'],
+            'end_date'=>['required', 'date'],
+            'reason'=>['required','string'],
+            'type'=>['required', 'string'],
+            'status'=>['required','boolean'],
+            'user_id' => ['required', 'exists:users,id']
         ];
     }
 }
