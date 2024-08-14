@@ -33,6 +33,28 @@ class UserService
 //    {
 //        return User::query()->find($userId);
 //    }
+    public function assignDepartments($user, $request)
+    {
+        $request->validate([
+            'departments' => 'required|array',
+            'departments.*.id' => 'exists:departments,id', // Validate that each department ID exists
+            'departments.*.position' => 'required|string', // Validate that each position is a string
+        ]);
+
+        // Prepare the data for sync
+        $syncData = [];
+        foreach ($request->departments as $department) {
+            $syncData[$department['id']] = ['position' => $department['position']];
+        }
+
+        // Sync the departments with the user, including the position
+        $user->departments()->sync($syncData);
+    }
+
+    public function getUserById($userId)
+    {
+        return User::query()->find($userId);
+    }
 
     public function updateUser($data, $user)
     {

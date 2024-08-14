@@ -61,6 +61,15 @@ class UserController extends Controller
         return $this->userService->getUserById($id);
     }
 
+    public function assignDepartments(User $user, Request $request)
+    {
+        $this->userService->assignDepartments($user, $request);
+        return response()->json([
+            'message' => 'Departments assigned successfully',
+            'user' => $user->load('departments')
+        ]);
+    }
+
     //Ask veton, pass a model Project $project and return $project
     // or keep it like this since we already have teh get users function?
 

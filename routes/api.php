@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -22,5 +21,6 @@ Route::resource('users', UserController::class)->except('destroy');
 Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
 Route::get('employees', [UserController::class, 'getEmployees']);
 Route::resource('vacations', VacationController::class);
+Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
 
 
