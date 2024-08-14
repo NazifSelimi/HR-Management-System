@@ -3,7 +3,6 @@
 namespace App\Services;
 
 
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\throwException;
