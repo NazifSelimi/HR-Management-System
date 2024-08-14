@@ -15,13 +15,9 @@ class ProjectService
         return Project::with('departments')->get();
     }
 
-    public function create(array $data): Project
+    public function create($data)
     {
-        $project = new Project([
-            'name' => $data['name'],
-            'description' => $data['description'],
-        ]);
-
+        $project = new Project($data);
         $project->save();
 
         // Attach departments to the project
@@ -29,6 +25,7 @@ class ProjectService
 
         return $project;
     }
+
     public function update($data, $project)
     {
         // Update project fields
@@ -36,11 +33,12 @@ class ProjectService
 
         // Update the departments if they are provided
         if (isset($data['department_ids'])) {
-            $project->department()->sync($data['department_ids']); // Sync the department relationships
+            $project->departments()->sync($data['department_ids']); // Sync the department relationships
+            //dd($project->departments);
         }
 
         // Reload the project with its relationships for returning
-        return $project->load('department');
+        return true;
     }
 
     public function delete($project)
@@ -49,11 +47,10 @@ class ProjectService
             $project->delete();
         } catch (\Exception $e) {
             // Handle or log the exception
-            \Log::error('Error in ProjectService delete method: '.$e->getMessage());
+            \Log::error('Error in ProjectService delete method: ' . $e->getMessage());
             throw $e; // Re-throw the exception to be caught in the controller
         }
     }
-
 
 
 }

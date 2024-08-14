@@ -16,7 +16,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::resource('projects', ProjectController::class);
 Route::resource('departments', DepartmentController::class);
-Route::resource('positions', PositionController::class);
 
 Route::middleware(['startSession'])->post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::resource('users', UserController::class)->except('destroy');
