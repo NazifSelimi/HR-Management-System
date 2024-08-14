@@ -32,15 +32,18 @@ class ProjectService
     public function update($data, $project)
     {
         // Update project fields
-        $project->update($data);
+        $project->update([
+            'name' => $data['name'],
+            'description' => $data['description'],
+        ]);
 
         // Update the departments if they are provided
         if (isset($data['department_ids'])) {
-            $project->department()->sync($data['department_ids']); // Sync the department relationships
+            $project->departments()->sync($data['department_ids']); // Sync the department relationships
         }
 
         // Reload the project with its relationships for returning
-        return $project->load('department');
+        return $project->load('departments'); // Ensure you use 'departments' to match the relationship name
     }
 
     public function delete($project)

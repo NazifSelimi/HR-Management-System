@@ -67,17 +67,20 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, Project $project)
     {
-        try{
-            $this->projectService->update($request->validated(), $project);
+        try {
+            $updatedProject = $this->projectService->update($request->validated(), $project);
             return response()->json([
                 'message' => "Project updated successfully",
-            ],201);
-        }
-        catch (ModelNotFoundException){
-            return response()->json(['message' =>'Project not found.'], 404);
-        }
-        catch (\Exception){
-            return response()->json([ 'message' => 'An error occurred while updating the project' ], 500);
+                'project' => $updatedProject
+            ], Response::HTTP_OK); // Use 200 for successful updates
+        } catch (ModelNotFoundException $e) {
+
+            return response()->json(['message' => 'Project not found.'], Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $e) {
+            // Log exception
+            \Log::error('Error updating project: ' . $e->getMessage());
+
+            return response()->json(['message' => 'An error occurred while updating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
