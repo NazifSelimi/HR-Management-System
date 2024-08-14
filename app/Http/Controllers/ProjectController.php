@@ -4,19 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
-use App\Services\ProjectService;
-
-// Ensure correct namespace
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Services\ProjectService; // Ensure correct namespace
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ProjectController extends Controller
 {
 
     protected $projectService;
-
     public function __construct()
     {
         $this->projectService = new ProjectService();
@@ -44,6 +39,9 @@ class ProjectController extends Controller
             $this->projectService->create($request->validated());
             return response()->json(['message' => 'Project created successfully'], Response::HTTP_CREATED);
         } catch (\Throwable $e) {
+            // Log the exception message for debugging
+            \Log::error('Project creation failed: ' . $e->getMessage());
+
             return response()->json(['message' => 'An error occurred while creating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -70,24 +68,28 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, Project $project)
     {
         try {
-            $this->projectService->update($request->validated(), $project);
+            $updatedProject = $this->projectService->update($request->validated(), $project);
             return response()->json([
                 'message' => "Project updated successfully",
-            ], 201);
-        } catch (ModelNotFoundException) {
-            return response()->json(['message' => 'Project not found.'], 404);
-        } catch (\Exception) {
-            return response()->json(['message' => 'An error occurred while updating the project'], 500);
+                'project' => $updatedProject
+            ], Response::HTTP_OK); // Use 200 for successful updates
+        } catch (ModelNotFoundException $e) {
+
+            return response()->json(['message' => 'Project not found.'], Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $e) {
+            // Log exception
+            \Log::error('Error updating project: ' . $e->getMessage());
+
+            return response()->json(['message' => 'An error occurred while updating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
      * Remove the specified resource from storage.
-     * @throws \Exception
      */
     public function destroy(Project $project)
     {
         $this->projectService->delete($project);
-        return response()->json([$project, 'message' => 'Project deleted successfully!'], 204);
+        return response()->json([$project, 'message'=>'Project deleted successfully!'], 204);
     }
 }
