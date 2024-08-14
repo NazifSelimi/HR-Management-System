@@ -22,5 +22,6 @@ Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
 Route::get('employees', [UserController::class, 'getEmployees']);
 Route::resource('roles', RoleController::class);
 Route::resource('vacations', VacationController::class);
+Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
 
 

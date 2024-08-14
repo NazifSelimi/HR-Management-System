@@ -58,18 +58,19 @@ class User extends Authenticatable
     }
 
 
-    public function daysOff() : HasMany
+    public function daysOff(): HasMany
     {
         return $this->hasMany(DaysOff::class);
     }
 
-    public function projects():BelongsToMany
+    public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'projects_users');
     }
 
-    public function departments():BelongsToMany
+    public function departments(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class, 'departments_users');
+        return $this->belongsToMany(Department::class, 'departments_users')
+            ->withPivot('position')->withTimestamps();
     }
 }
