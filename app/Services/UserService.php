@@ -51,10 +51,10 @@ class UserService
         $user->departments()->sync($syncData);
     }
 
-    public function getUserById($userId)
-    {
-        return User::query()->find($userId);
-    }
+//    public function getUserById($userId)
+//    {
+//        return User::query()->find($userId);
+//    }
 
     public function updateUser($data, $user)
     {
