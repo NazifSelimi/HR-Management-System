@@ -55,7 +55,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return $this->projectService->getProject($project->id);
+        return $this->projectService->getProjectById($project->id);
     }
 
     /**

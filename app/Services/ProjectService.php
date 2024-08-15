@@ -10,9 +10,14 @@ use function PHPUnit\Framework\throwException;
 class ProjectService
 {
 
-    public function getProjects(): array
+    public function getProjects()
     {
         return Project::with('departments')->get();
+    }
+
+    public function getProjectById(string $id)
+    {
+        return Project::with(['departments', 'users.departments'])->find($id);
     }
 
     public function create(array $data): Project
@@ -55,7 +60,7 @@ class ProjectService
             throw $e; // Re-throw the exception to be caught in the controller
         }
     }
- 
+
 
 
 }

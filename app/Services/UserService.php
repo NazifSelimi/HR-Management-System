@@ -51,6 +51,11 @@ class UserService
         $user->departments()->sync($syncData);
     }
 
+    public function assignProject()
+    {
+
+    }
+
 //    public function getUserById($userId)
 //    {
 //        return User::query()->find($userId);
