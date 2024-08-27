@@ -10,6 +10,8 @@ class DaysOff extends Model
 {
     use HasFactory;
 
+    protected $table = 'days_off';
+
     protected $fillable = [
         'user_id',
         'start_date',
@@ -30,7 +32,7 @@ class DaysOff extends Model
 
     }
 
-    public function users() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
