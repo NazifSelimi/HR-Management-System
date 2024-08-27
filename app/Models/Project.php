@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Department; // Ensure correct import
+use App\Models\Department;
+
+// Ensure correct import
 
 class Project extends Model
 {
@@ -23,6 +25,7 @@ class Project extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'projects_users');
+        return $this->belongsToMany(User::class, 'projects_users')
+            ->withPivot('role')->withTimestamps();
     }
 }

@@ -48,6 +48,21 @@ class DepartmentController extends Controller
         }
     }
 
+    public function assignUsers(Request $request, Department $department)
+    {
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'exists:users,id',
+            'users.*.position' => 'required|string',
+        ]);
+        $this->departmentService->assignUsers($department, $request);
+
+        return response()->json([
+            'message' => 'Users and positions assigned successfully',
+            'department' => $department->load('users') // Load the users relationship
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */

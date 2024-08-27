@@ -22,5 +22,9 @@ Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
 Route::get('employees', [UserController::class, 'getEmployees']);
 Route::resource('vacations', VacationController::class);
 Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
+Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
+Route::post('/assign-projects/{user}', [UserController::class, 'assignProjects']);
+
+
 
 

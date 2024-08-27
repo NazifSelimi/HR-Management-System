@@ -24,6 +24,16 @@ class DepartmentService
         return $department;
     }
 
+    public function assignUsers($department, $request)
+    {
+        $syncData = [];
+        foreach ($request->users as $user) {
+            $syncData[$user['id']] = ['position' => $user['position']];
+        }
+        $department->users()->sync($syncData);
+
+    }
+
     public function update($data, $department)
     {
         $department->update($data);
