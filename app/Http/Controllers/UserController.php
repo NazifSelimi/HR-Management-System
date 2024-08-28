@@ -70,6 +70,16 @@ class UserController extends Controller
         ]);
     }
 
+    public function assignProject(User $user, Request $request)
+    {
+        $this->userService->assignProjects($user, $request);
+        return response()->json([
+            'message' => 'Projects assigned successfully',
+            'user' => $user->load('projects')
+        ]);
+
+    }
+
     //Ask veton, pass a model Project $project and return $project
     // or keep it like this since we already have teh get users function?
 

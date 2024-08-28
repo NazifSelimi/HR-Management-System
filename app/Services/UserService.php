@@ -51,9 +51,18 @@ class UserService
         $user->departments()->sync($syncData);
     }
 
-    public function assignProject()
+    public function assignProjects($user, $request)
     {
-
+        $request->validate([
+            'project' => 'required|array',
+            'projects.*.id' => 'exists:projects,id',
+            'projects.*.role' => 'required|string',
+        ]);
+        $syncData = [];
+        foreach($request->projects as $project) {
+            $syncData[$project['id']] = ['role' => $project['role']];
+        }
+        $user->projects()->sync($syncData);
     }
 
 //    public function getUserById($userId)
