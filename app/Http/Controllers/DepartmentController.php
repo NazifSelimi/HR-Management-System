@@ -11,9 +11,10 @@ use Illuminate\Http\Request;
 class DepartmentController extends Controller
 {
     protected $departmentService;
+
     public function __construct()
     {
-        $this->departmentService=new DepartmentService();
+        $this->departmentService = new DepartmentService();
     }
 
     /**
@@ -37,15 +38,29 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentRequest $request)
     {
-        try{
+        try {
             $this->departmentService->create($request->validated());
             return response()->json([
                 'message' => "Department created successfully",
-            ],201);
+            ], 201);
+        } catch (\Exception) {
+            return response()->json(['message' => 'An error occurred while creating the department'], 500);
         }
-        catch (\Exception){
-            return response()->json([ 'message' => 'An error occurred while creating the department' ], 500);
-        }
+    }
+
+    public function assignUsers(Request $request, Department $department)
+    {
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'exists:users,id',
+            'users.*.position' => 'required|string',
+        ]);
+        $this->departmentService->assignUsers($department, $request);
+
+        return response()->json([
+            'message' => 'Users and positions assigned successfully',
+            'department' => $department->load('users') // Load the users relationship
+        ]);
     }
 
     /**
@@ -53,8 +68,9 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        return $department;
+        return $this->departmentService->getDepartmentById($department->id);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -69,14 +85,13 @@ class DepartmentController extends Controller
      */
     public function update(DepartmentRequest $request, Department $department)
     {
-        try{
+        try {
             $this->departmentService->update($request->validated(), $department);
             return response(['message' => 'Department updated successfully'], 201);
-        }catch (ModelNotFoundException){
-            return response()->json(['message' =>'Department not found.'], 404);
-        }
-        catch (\Exception){
-            return response()->json([ 'message' => 'An error occurred while updating the department' ], 500);
+        } catch (ModelNotFoundException) {
+            return response()->json(['message' => 'Department not found.'], 404);
+        } catch (\Exception) {
+            return response()->json(['message' => 'An error occurred while updating the department'], 500);
         }
     }
 
@@ -86,6 +101,6 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         $this->departmentService->delete($department);
-        return response()->json([$department, 'message'=>'User deleted successfully !'], 204);
+        return response()->json([$department, 'message' => 'User deleted successfully !'], 204);
     }
 }

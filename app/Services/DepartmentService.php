@@ -9,12 +9,12 @@ class DepartmentService
 {
     public function getDepartments()
     {
-        return Department::query()->get();
+        return Department::with(['projects', 'users'])->get();
     }
 
     public function getDepartmentById($id)
     {
-        return Department::query()->find($id);
+        return Department::with(['projects', 'users'])->find($id);
     }
 
     public function create($data)
@@ -22,6 +22,16 @@ class DepartmentService
         $department = new Department($data);
         $department->save();
         return $department;
+    }
+
+    public function assignUsers($department, $request)
+    {
+        $syncData = [];
+        foreach ($request->users as $user) {
+            $syncData[$user['id']] = ['position' => $user['position']];
+        }
+        $department->users()->sync($syncData);
+
     }
 
     public function update($data, $department)

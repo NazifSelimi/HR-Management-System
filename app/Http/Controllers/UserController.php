@@ -63,6 +63,12 @@ class UserController extends Controller
 
     public function assignDepartments(User $user, Request $request)
     {
+        $request->validate([
+            'departments' => 'required|array',
+            'departments.*.id' => 'exists:departments,id',
+            'departments.*.position' => 'required|string',
+        ]);
+
         $this->userService->assignDepartments($user, $request);
         return response()->json([
             'message' => 'Departments assigned successfully',
@@ -70,14 +76,19 @@ class UserController extends Controller
         ]);
     }
 
-    public function assignProject(User $user, Request $request)
+    public function assignProjects(User $user, Request $request)
     {
+        $request->validate([
+            'projects' => 'required|array',
+            'projects.*.id' => 'exists:projects,id',
+            'projects.*.role' => 'required|string',
+        ]);
+
         $this->userService->assignProjects($user, $request);
         return response()->json([
             'message' => 'Projects assigned successfully',
             'user' => $user->load('projects')
         ]);
-
     }
 
     //Ask veton, pass a model Project $project and return $project

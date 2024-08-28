@@ -18,10 +18,12 @@ class UserService
     {
         return User::query()->get();
     }
+
     public function getUserById($id)
     {
-        return User::with(['projects' , 'departments'])->find($id);
+        return User::with(['projects', 'departments'])->find($id);
     }
+
     public function create($data)
     {
         $user = new User($data);
@@ -35,35 +37,26 @@ class UserService
 //    }
     public function assignDepartments($user, $request)
     {
-        $request->validate([
-            'departments' => 'required|array',
-            'departments.*.id' => 'exists:departments,id', // Validate that each department ID exists
-            'departments.*.position' => 'required|string', // Validate that each position is a string
-        ]);
-
-        // Prepare the data for sync
         $syncData = [];
         foreach ($request->departments as $department) {
             $syncData[$department['id']] = ['position' => $department['position']];
         }
-
-        // Sync the departments with the user, including the position
         $user->departments()->sync($syncData);
     }
 
     public function assignProjects($user, $request)
     {
-        $request->validate([
-            'project' => 'required|array',
-            'projects.*.id' => 'exists:projects,id',
-            'projects.*.role' => 'required|string',
-        ]);
         $syncData = [];
-        foreach($request->projects as $project) {
+        foreach ($request->projects as $project) {
             $syncData[$project['id']] = ['role' => $project['role']];
         }
         $user->projects()->sync($syncData);
     }
+
+//    public function assignProject()
+//    {
+//
+//    }
 
 //    public function getUserById($userId)
 //    {
