@@ -31,3 +31,4 @@ Route::patch('/vacation/{days_off}', [DaysOffController::class, 'update']);
 
 
 
+

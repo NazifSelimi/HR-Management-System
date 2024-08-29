@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Services\DaysOffService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\error;
 
 class DaysOffController extends Controller
 {
@@ -21,10 +23,10 @@ class DaysOffController extends Controller
     public function store(DaysOffRequest $request)
     {
         try {
-            $this->daysOffService->store($request->validated());
-            return response()->json(['message' => 'Request made successfully'], 201);
+            return $this->daysOffService->store($request->validated());
         } catch (\Exception $exception) {
-            return response()->$exception->getMessage();
+            DB::rollBack();
+            return response()->json(['error' => 'Something went wrong while requesting vacation'], 500);
         }
     }
 
@@ -33,7 +35,8 @@ class DaysOffController extends Controller
         try {
             return $this->daysOffService->update($daysOff, $status->status);
         } catch (\Exception $exception) {
-            return response()->$exception->getMessage();
+            DB::rollBack();
+            return response()->json(['error' => 'Something went wrong while reviewing vacation'], 500);
         }
     }
 }
