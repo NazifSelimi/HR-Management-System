@@ -53,10 +53,10 @@ class UserService
         $user->projects()->sync($syncData);
     }
 
-    public function assignProject()
-    {
-
-    }
+//    public function assignProject()
+//    {
+//
+//    }
 
 //    public function getUserById($userId)
 //    {
