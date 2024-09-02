@@ -20,10 +20,14 @@ class DaysOffController extends Controller
         $this->daysOffService = $daysOffService;
     }
 
+
     public function store(DaysOffRequest $request)
     {
         try {
+            //Calls a store function when user requests a vacation; Returns a json message;
             return $this->daysOffService->store($request->validated());
+
+            //Catch any unhandled errors
         } catch (\Exception $exception) {
             return response()->json(['error' => 'Something went wrong while requesting vacation'], 500);
         }
@@ -32,7 +36,10 @@ class DaysOffController extends Controller
     public function update(Request $status, DaysOff $daysOff)
     {
         try {
+            //Calls update function on vacation request; Returns json message for accepting and rejecting vacation
             return $this->daysOffService->update($daysOff, $status->status);
+
+            //Catch any unhandled errors; Rollback the database if there's any data inconsistency;
         } catch (\Exception $exception) {
             DB::rollBack();
             return response()->json(['error' => 'Something went wrong while reviewing vacation'], 500);

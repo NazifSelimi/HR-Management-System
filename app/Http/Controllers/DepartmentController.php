@@ -22,16 +22,10 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+        //Get all department records
         return $this->departmentService->getDepartments();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,6 +33,7 @@ class DepartmentController extends Controller
     public function store(DepartmentRequest $request)
     {
         try {
+            //Call function to create and store a new department record
             $this->departmentService->create($request->validated());
             return response()->json([
                 'message' => "Department created successfully",
@@ -50,13 +45,15 @@ class DepartmentController extends Controller
 
     public function assignUsers(Request $request, Department $department)
     {
+        //Expect and input of and array of objects that consists of a user id and a position
         $request->validate([
             'users' => 'required|array',
             'users.*.id' => 'exists:users,id',
             'users.*.position' => 'required|string',
         ]);
-        $this->departmentService->assignUsers($department, $request);
 
+        //Stores the validated users with positions in the pivot table
+        $this->departmentService->assignUsers($department, $request);
         return response()->json([
             'message' => 'Users and positions assigned successfully',
             'department' => $department->load('users') // Load the users relationship
@@ -68,16 +65,8 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        //Show one department, returns selected department
         return $this->departmentService->getDepartmentById($department->id);
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -86,6 +75,7 @@ class DepartmentController extends Controller
     public function update(DepartmentRequest $request, Department $department)
     {
         try {
+            //Update department record with new data
             $this->departmentService->update($request->validated(), $department);
             return response(['message' => 'Department updated successfully'], 201);
         } catch (ModelNotFoundException) {
@@ -100,7 +90,15 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        $this->departmentService->delete($department);
-        return response()->json([$department, 'message' => 'User deleted successfully !'], 204);
+        try {
+            //Delete department record
+            $this->departmentService->delete($department);
+            return response()->json([$department, 'message' => 'User deleted successfully !'], 204);
+        } catch (ModelNotFoundException) {
+            return response()->json(['message' => 'Department not found.'], 404);
+        } catch (\Exception) {
+            return response()->json(['message' => 'An error occurred while deleting the department'], 500);
+        }
+
     }
 }
