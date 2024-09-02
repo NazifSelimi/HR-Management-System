@@ -25,7 +25,6 @@ class DaysOffController extends Controller
         try {
             return $this->daysOffService->store($request->validated());
         } catch (\Exception $exception) {
-            DB::rollBack();
             return response()->json(['error' => 'Something went wrong while requesting vacation'], 500);
         }
     }
