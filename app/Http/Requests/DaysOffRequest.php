@@ -27,7 +27,7 @@ class DaysOffRequest extends FormRequest
             'end_date' => 'required|date',
             'reason' => 'required|string',
             'type' => 'required|string',
-            'user_id' => 'required|integer:exists:users,id',
+            //'user_id' => 'required|integer:exists:users,id',
         ];
     }
 

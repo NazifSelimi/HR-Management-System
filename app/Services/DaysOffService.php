@@ -10,12 +10,28 @@ use Illuminate\Support\Facades\DB;
 
 class DaysOffService
 {
-    public function store($data)
+
+    public function get()
+    {
+        return DaysOff::with('user')->get();
+    }
+
+    public function getEmployeeDaysOff($userId)
+    {
+        return DaysOff::with('user')->where('user_id', $userId)->get();
+    }
+
+    public function store($data, $user)
     {
         $daysOff = new DaysOff($data);
+        $daysOff->user()->associate($user->id);
+        $startDate = Carbon::parse($data['start_date']);
+        $endDate = Carbon::parse($data['end_date']);
+        $interval = $endDate->diffInDays($startDate);
+
 
         //Check if inputted start date and end date are valid
-        if ($data['start_date'] > now() && $data['end_date'] > $data['start_date']) {
+        if ($data['start_date'] > now() && $data['end_date'] > $data['start_date'] && $interval < $user->days_off) {
             $daysOff->save();
             return response(['message' => 'Vacation has been requested'], 201);
         } else {
@@ -26,7 +42,7 @@ class DaysOffService
     public function update($daysOff, $status)
     {
         //If $status exists and status of specific request is different from the input of the admin (accepted or not)
-        if ($status && $daysOff->status !== $status) {
+        if ($status && $daysOff->status !== $status && $status === "accept") {
             DB::beginTransaction();
 
             $daysOff->status = $status;           //update status of the days off request
@@ -57,6 +73,8 @@ class DaysOffService
             DB::commit();
             return response(['message' => 'Vacation has been approved'], 201);
         } else {
+            $daysOff->status = $status;
+            $daysOff->save();
             return response(['message' => 'Vacation has been rejected'], 201);
         }
     }
