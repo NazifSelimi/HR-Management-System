@@ -23,15 +23,8 @@ class ProjectController extends Controller
 
     public function index()
     {
+        //Get all project records
         return $this->projectService->getProjects();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -40,12 +33,10 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request): JsonResponse
     {
         try {
+            //Create and store new project record
             $this->projectService->create($request->validated());
             return response()->json(['message' => 'Project created successfully'], Response::HTTP_CREATED);
         } catch (\Throwable $e) {
-            // Log the exception message for debugging
-            \Log::error('Project creation failed: ' . $e->getMessage());
-
             return response()->json(['message' => 'An error occurred while creating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -55,15 +46,14 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return $this->projectService->getProjectById($project->id);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        //Returns specific project by id
+        try {
+            return $this->projectService->getProjectById($project->id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Project not found'], 404);
+        } catch (\Exception) {
+            return \response()->json(['message' => 'Somethin went wrong while fetching the project'], 500);
+        }
     }
 
     /**
@@ -72,18 +62,15 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, Project $project)
     {
         try {
+            //Update existing project record
             $updatedProject = $this->projectService->update($request->validated(), $project);
             return response()->json([
                 'message' => "Project updated successfully",
                 'project' => $updatedProject
-            ], Response::HTTP_OK); // Use 200 for successful updates
+            ], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-
             return response()->json(['message' => 'Project not found.'], Response::HTTP_NOT_FOUND);
         } catch (\Throwable $e) {
-            // Log exception
-            \Log::error('Error updating project: ' . $e->getMessage());
-
             return response()->json(['message' => 'An error occurred while updating the project'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,7 +80,15 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $this->projectService->delete($project);
-        return response()->json([$project, 'message' => 'Project deleted successfully!'], 204);
+        try {
+            //Delete existing project record
+            $this->projectService->delete($project);
+            return response()->json([$project, 'message' => 'Project deleted successfully!'], 204);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Project not found.'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return \response()->json(['message' => 'Something went wrong.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

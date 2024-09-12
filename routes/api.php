@@ -22,18 +22,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::resource('users', UserController::class)->except('destroy');
         Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
         Route::get('employees', [UserController::class, 'getEmployees']);
-        Route::resource('vacations', VacationController::class);
         Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
         Route::post('assign-projects/{user}', [UserController::class, 'assignProject']);
         Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
         Route::post('/assign-projects', [UserController::class, 'assignProjects']);
-        Route::post('/request-vacation', [DaysOffController::class, 'store']);
+        Route::get('/vacation', [DaysOffController::class, 'index']);
         Route::patch('/vacation/{days_off}', [DaysOffController::class, 'update']);
     });
 
+    Route::post('/request-vacation', [DaysOffController::class, 'store']);
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::get('/user', [AuthenticatedSessionController::class, 'user']);
+    Route::post('/request-vacation', [DaysOffController::class, 'store']);
+    Route::get('/employee-vacation', [DaysOffController::class, 'getEmployeeDaysOff']);
 });
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+
+
+
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
