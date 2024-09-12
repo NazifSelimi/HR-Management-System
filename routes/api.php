@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthenticatedSessionController::class, 'user']);
 });
 
-
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 
 
