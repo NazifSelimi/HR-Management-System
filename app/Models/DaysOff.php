@@ -37,14 +37,14 @@ class DaysOff extends Model
     protected function formattedStartDate(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start_date ? Carbon::parse($this->start_date)->format('d M Y') : 'Pending',
+            get: fn() => $this->start_date ? Carbon::parse($this->start_date)->format('d M Y') : 'pending',
         );
     }
 
     protected function formattedEndDate(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->end_date ? Carbon::parse($this->end_date)->format('d M Y') : 'Pending',
+            get: fn() => $this->end_date ? Carbon::parse($this->end_date)->format('d M Y') : 'pending',
         );
     }
 

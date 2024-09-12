@@ -41,9 +41,10 @@ class DaysOffService
 
     public function update($daysOff, $status)
     {
+        DB::beginTransaction();
+
         //If $status exists and status of specific request is different from the input of the admin (accepted or not)
         if ($status && $daysOff->status !== $status && $status === "accept") {
-            DB::beginTransaction();
 
             $daysOff->status = $status;           //update status of the days off request
 
@@ -75,6 +76,7 @@ class DaysOffService
         } else {
             $daysOff->status = $status;
             $daysOff->save();
+            DB::commit();
             return response(['message' => 'Vacation has been rejected'], 201);
         }
     }

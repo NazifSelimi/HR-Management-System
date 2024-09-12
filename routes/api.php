@@ -24,7 +24,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('employees', [UserController::class, 'getEmployees']);
         Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
         Route::post('assign-projects/{user}', [UserController::class, 'assignProject']);
-        Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
         Route::post('/assign-projects', [UserController::class, 'assignProjects']);
         Route::get('/vacation', [DaysOffController::class, 'index']);
         Route::patch('/vacation/{days_off}', [DaysOffController::class, 'update']);
@@ -37,6 +36,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/employee-vacation', [DaysOffController::class, 'getEmployeeDaysOff']);
 });
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
+
 
 
 

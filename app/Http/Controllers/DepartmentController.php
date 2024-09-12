@@ -53,11 +53,12 @@ class DepartmentController extends Controller
         ]);
 
         //Stores the validated users with positions in the pivot table
-        $this->departmentService->assignUsers($department, $request);
-        return response()->json([
-            'message' => 'Users and positions assigned successfully',
-            'department' => $department->load('users') // Load the users relationship
-        ]);
+        return $this->departmentService->assignUsers($department, $request);
+//        return response()->json([
+//            'message' => 'Users and positions assigned successfully',
+//            'department' => $department->load('users') // Load the users relationship
+//        ]);
+
     }
 
     /**

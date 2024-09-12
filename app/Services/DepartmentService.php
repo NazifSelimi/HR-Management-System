@@ -30,14 +30,24 @@ class DepartmentService
     public function assignUsers($department, $request)
     {
         $syncData = [];
+        $response = [];
+        $existingAssignments = $department->users()->pluck('position', 'user_id')->toArray();
 
         //Creates an associative array where key is user id and value is position of that user in that department
         foreach ($request->users as $user) {
-            $syncData[$user['id']] = ['position' => $user['position']];
+
+            if (!array_key_exists($user['id'], $existingAssignments)) {
+
+                $syncData[$user['id']] = ['position' => $user['position']];
+                $response[] = response()->json(['message' => 'User assigned successfully.']);
+            } else {
+                $response[] = response()->json(['message' => 'This user is already assigned to this department.']);
+            }
         }
 
         //Syncs the prepared users with positions with the corresponding department id in the pivot table
-        $department->users()->sync($syncData);
+        $department->users()->syncWithoutDetaching($syncData);
+        return $response;
     }
 
     public function update($data, $department)
