@@ -42,7 +42,7 @@ Route::post('/assign-users/{department}', [DepartmentController::class, 'assignU
 
 
 
-
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 
 
