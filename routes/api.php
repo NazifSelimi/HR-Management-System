@@ -4,7 +4,6 @@ use App\Http\Controllers\DaysOffController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacationController;
 use Illuminate\Http\Request;
@@ -29,12 +28,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/assign-projects', [UserController::class, 'assignProjects']);
         Route::post('/request-vacation', [DaysOffController::class, 'store']);
         Route::patch('/vacation/{days_off}', [DaysOffController::class, 'update']);
+        Route::post('/search', [\App\Http\Controllers\SearchController::class, 'search']);
     });
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::get('/user', [AuthenticatedSessionController::class, 'user']);
 });
 
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 
 

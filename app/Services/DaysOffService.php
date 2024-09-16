@@ -8,6 +8,11 @@ use Carbon\Carbon;
 
 class DaysOffService
 {
+    public function getDaysOff()
+    {
+        DaysOff::query()->get();
+
+    }
     public function store($data)
     {
         $daysOff = new DaysOff($data);
