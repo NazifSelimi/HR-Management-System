@@ -16,6 +16,16 @@ class ProjectService
         return Project::with('departments')->get();
     }
 
+    public function getEmployeeProjects($userId)
+    {
+        return Project::whereRelation('users', 'user_id', $userId)->get();
+    }
+
+    public function getEmployeeProjectById($projectId)
+    {
+        return Project::with('users')->findOrFail($projectId);
+    }
+
     public function getProjectById(string $id)
     {
         //Get specific Project with its related departments and users; Also loads the related departments of the users related to the project

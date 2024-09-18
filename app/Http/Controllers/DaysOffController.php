@@ -34,9 +34,9 @@ class DaysOffController extends Controller
     public function store(DaysOffRequest $request)
     {
         try {
-            $userId = Auth::user();
+            $user = Auth::user();
             //Calls a store function when user requests a vacation; Returns a json message;
-            return $this->daysOffService->store($request->validated(), $userId);
+            return $this->daysOffService->store($request->validated(), $user);
 
             //Catch any unhandled errors
         } catch (\Exception $exception) {

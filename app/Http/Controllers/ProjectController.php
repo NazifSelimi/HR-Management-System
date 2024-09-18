@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
+use App\Models\User;
 use App\Services\ProjectService;
 
 // Ensure correct namespace
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -25,6 +27,26 @@ class ProjectController extends Controller
     {
         //Get all project records
         return $this->projectService->getProjects();
+    }
+
+    public function getEmployeeProjects()
+    {
+        try {
+            $projects = $this->projectService->getEmployeeProjects(Auth::id());
+
+            return response()->json($projects, 200); // Directly return the projects
+        } catch (\Exception $e) {
+            // Log and return error response
+//            return response()->json(['message' => 'Server error occurred.'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getEmployeeProjectById(Project $project)
+    {
+        if ($project->users->contains(Auth::id())) {
+            return $this->projectService->getEmployeeProjectById($project->id);
+        }
     }
 
     /**
@@ -52,7 +74,7 @@ class ProjectController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Project not found'], 404);
         } catch (\Exception) {
-            return \response()->json(['message' => 'Somethin went wrong while fetching the project'], 500);
+            return \response()->json(['message' => 'Something went wrong while fetching the project'], 500);
         }
     }
 

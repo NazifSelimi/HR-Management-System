@@ -59,7 +59,7 @@ class UserService
         }
 
         //Syncs the prepared projects with roles with the corresponding user id in the pivot table
-        $user->projects()->sync($syncData);
+        $user->projects()->syncWithoutDetaching($syncData);
     }
 
 
