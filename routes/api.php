@@ -39,8 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Assignment routes (assign departments/projects to users)
         Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
         Route::post('assign-projects/{user}', [UserController::class, 'assignProjects']);
-        Route::post('/assign-users/{project}', [ProjectController::class, 'assignUsers']);
-        Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
+        Route::post('/assign-users-department/{department}', [DepartmentController::class, 'assignUsers']);
         Route::post('/user/{user}/remove-projects', [UserController::class, 'removeFromProject']);
         Route::post('/user/{user}/remove-departments', [UserController::class, 'removeFromDepartment']);
 
@@ -68,3 +67,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 });
 
+Route::post('/assign-users-projects/{project}', [ProjectController::class, 'assignUsers']);
