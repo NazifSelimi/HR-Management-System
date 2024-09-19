@@ -37,11 +37,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/request-vacation', [DaysOffController::class, 'store']);
     Route::get('/employee-vacation', [DaysOffController::class, 'getEmployeeDaysOff']);
     Route::get('/employee-projects', [ProjectController::class, 'getEmployeeProjects']);
-
     Route::get('/view-project/{project}', [ProjectController::class, 'getEmployeeProjectById']);
+    Route::get('/employee-departments', [DepartmentController::class, 'getEmployeeDepartments']);
+    Route::get('/view-department/{department}', [DepartmentController::class, 'getEmployeeDepartmentsById']);
+    Route::get('/profile', [UserController::class, 'profile']);
 
 });
 
+Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 

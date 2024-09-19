@@ -36,9 +36,7 @@ class ProjectController extends Controller
 
             return response()->json($projects, 200); // Directly return the projects
         } catch (\Exception $e) {
-            // Log and return error response
-//            return response()->json(['message' => 'Server error occurred.'], 500);
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Server error occurred.'], 500);
         }
     }
 

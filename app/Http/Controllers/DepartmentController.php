@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
+use App\Models\Project;
 use App\Services\DepartmentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -59,6 +61,24 @@ class DepartmentController extends Controller
 //            'department' => $department->load('users') // Load the users relationship
 //        ]);
 
+    }
+
+    public function getEmployeeDepartments()
+    {
+        try {
+            $projects = $this->departmentService->getEmployeeDepartments(Auth::id());
+
+            return response()->json($projects, 200); // Directly return the projects
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Server error occurred.'], 500);
+        }
+    }
+
+    public function getEmployeeDepartmentsById(Department $department)
+    {
+        if ($department->users->contains(Auth::id())) {
+            return $this->departmentService->getEmployeeDepartmentsById($department->id);
+        }
     }
 
     /**

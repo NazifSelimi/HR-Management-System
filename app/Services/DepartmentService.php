@@ -19,6 +19,17 @@ class DepartmentService
         return Department::with(['projects', 'users'])->find($id);
     }
 
+    public function getEmployeeDepartments($userId)
+    {
+        return Department::whereRelation('users', 'user_id', $userId)->get();
+    }
+
+    public function getEmployeeDepartmentsById($departmentId)
+    {
+        return Department::with('users')->findOrFail($departmentId);
+    }
+
+
     public function create($data)
     {
         //Create new department instance and store it in the database

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\UserService;
@@ -126,6 +127,27 @@ class UserController extends Controller
             return response()->json(['message' => 'An error occurred while updating the user'], 500);
         }
 
+    }
+
+    public function updateProfile(ProfileRequest $request, User $user)
+    {
+
+        try {
+            //Updates user record with new data
+            $this->userService->updateUser($request->validated(), $user);
+            return response(['message' => 'User updated successfully'], 201);
+        } catch (ModelNotFoundException) {
+            return response()->json(['message' => 'User not found.'], 404);
+        } catch (\Exception $e) {
+//            return response()->json(['message' => 'An error occurred while updating the user'], 500);
+            return response()->json(['exception' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function profile()
+    {
+        return Auth::user();
     }
 
     /**
