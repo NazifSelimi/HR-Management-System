@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Department management routes
         Route::resource('departments', DepartmentController::class);
+        Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
 
         // User management routes (admin can manage users except delete)
         Route::resource('users', UserController::class)->except('destroy');
