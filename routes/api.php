@@ -5,7 +5,6 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\VacationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,13 +34,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthenticatedSessionController::class, 'user']);
     Route::post('/request-vacation', [DaysOffController::class, 'store']);
     Route::get('/employee-vacation', [DaysOffController::class, 'getEmployeeDaysOff']);
-    Route::get('/employee-projects', [ProjectController::class, 'getEmployeeProjects']);
-
-    Route::get('/view-project/{project}', [ProjectController::class, 'getEmployeeProjectById']);
-
-Route::resource('users', UserController::class)->except('destroy');
-
-route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
+});
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
