@@ -61,11 +61,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         try {
             //Show one user, returns selected user
-            return $this->userService->getUserById($id);
+            return $this->userService->getUserById($user->id);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);
         } catch (\Exception) {
@@ -111,7 +111,21 @@ class UserController extends Controller
     //Ask veton, pass a model Project $project and return $project
     // or keep it like this since we already have teh get users function?
 
+    public function removeFromProject(User $user, Request $request)
+    {
+        // Call the service method to remove projects
+        $response = $this->userService->removeFromProject($user, $request->projects);
 
+        return response()->json($response);
+    }
+
+    public function removeFromDepartment(User $user, Request $request)
+    {
+        // Call the service method to remove departments
+        $response = $this->userService->removeFromDepartment($user, $request->departments);
+
+        return response()->json($response);
+    }
     /**
      * Update the specified resource in storage.
      */

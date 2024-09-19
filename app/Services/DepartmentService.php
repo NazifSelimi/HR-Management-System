@@ -60,6 +60,33 @@ class DepartmentService
         $department->users()->syncWithoutDetaching($syncData);
         return $response;
     }
+    public function updateUserPosition(Department $department, $users)
+    {
+        $updateData = [];
+        $response = [];
+
+        // Get the list of user_ids already assigned to the department
+        $existingAssignments = $department->users()->pluck('user_id')->toArray();
+
+        // Create an associative array where key is user id and value is the updated position for that user in the department
+        foreach ($users as $user) {
+            if (in_array($user['id'], $existingAssignments)) {
+                // If user exists in the department, update their position
+                $updateData[$user['id']] = ['position' => $user['position']];
+                $response[] = ['message' => "User ID {$user['id']}: role updated successfully in department with ID {$department->id}."];
+            } else {
+                $response[] = ['message' => "User ID {$user['id']}: is not assigned to department with ID {$department->id}."];
+            }
+        }
+
+        // Syncs the users' positions, updating the pivot table for the corresponding department
+        $department->users()->syncWithoutDetaching($updateData);
+
+        return $response;
+    }
+
+
+
 
     public function update($data, $department)
     {

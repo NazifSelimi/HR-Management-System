@@ -6,7 +6,7 @@ use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\ProjectService;
-
+use Illuminate\Http\Request;
 // Ensure correct namespace
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -74,6 +74,18 @@ class ProjectController extends Controller
         } catch (\Exception) {
             return \response()->json(['message' => 'Something went wrong while fetching the project'], 500);
         }
+    }
+    public function assignUsers(Project $project, Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'required|exists:users,id',
+            'users.*.role' => 'required|string',
+        ]);
+
+        // Call the service function to handle user assignments
+        return $this->projectService->assignUsers($project, $request);
     }
 
     /**

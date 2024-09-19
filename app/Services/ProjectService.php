@@ -6,6 +6,7 @@ use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\throwException;
+use Illuminate\Http\Request;
 
 class ProjectService
 {
@@ -44,6 +45,34 @@ class ProjectService
 
         return $project;
     }
+    public function assignUsers($project, Request $request)
+    {
+        $syncData = [];
+        $response = [];
+
+        // Get existing assignments for the project (pluck user_id and their role)
+        $existingAssignments = $project->users()->pluck('projects_users.role', 'user_id')->toArray();
+
+
+        // Loop through the users from the request
+        foreach ($request->users as $user) {
+            // If the user is not already assigned to the project
+            if (!array_key_exists($user['id'], $existingAssignments)) {
+                // Prepare the data for syncing (user ID and role)
+                $syncData[$user['id']] = ['role' => $user['role']];
+                $response[] = response()->json(['message' => 'User Assigned to Project Successfully']);
+            } else {
+                $response[] = response()->json(['message' => 'User already assigned to this project']);
+            }
+        }
+
+        // Sync the prepared users with roles to the project
+        $project->users()->syncWithoutDetaching($syncData);
+
+        // Return the response
+        return response()->json(['message' => 'Users assigned successfully', 'project' => $project->load('users')]);
+    }
+
 
     public function update($data, $project)
     {

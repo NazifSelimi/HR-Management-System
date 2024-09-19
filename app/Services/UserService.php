@@ -23,8 +23,18 @@ class UserService
 
     public function getUserById($id)
     {
-        //Get specific user record by given id; Also eager load their relationships: Projects and departments
-        return User::with(['projects', 'departments'])->find($id);
+        // Get the user by the given id and eager load their projects and departments
+        // where this user is part of the projects and departments
+        $user = User::with([
+            'projects' => function ($query) use ($id) {
+                $query->whereRelation('users', 'user_id', $id); // Filter projects by user id
+            },
+            'departments' => function ($query) use ($id) {
+                $query->whereRelation('users', 'user_id', $id); // Filter departments by user id
+            }
+        ])->find($id);
+
+        return $user;
     }
 
     public function create($data)
@@ -38,30 +48,79 @@ class UserService
     public function assignDepartments($user, $request)
     {
 
-        $syncData = [];
 
+        $syncData = [];
+        $response = []; //why array?
+        $existingAssignments = $user->departments()->pluck('department_id','position')->toArray();
         //Creates an associative array where key is department id and value is position of that user in that department
         foreach ($request->departments as $department) {
-            $syncData[$department['id']] = ['position' => $department['position']];
+            if (!array_key_exists($department['id'], $existingAssignments)) {
+                $syncData[$department['id']] = ['position' => $department['position']];
+                $response[] = response()->json(['message' => 'Department assigned Successfully']);
+            }else{
+                $response[] = response()->json(['message' => 'Department already assigned']);
+            }
         }
 
         //Syncs the prepared departments with positions with the corresponding user id in the pivot table
-        $user->departments()->sync($syncData);
+        $user->departments()->syncWithoutDetaching($syncData);
     }
 
     public function assignProjects($user, $request)
     {
         $syncData = [];
+        $response = [];
+        $existingAssignments = $user->projects()->pluck('project_id', 'role')->toArray();
 
         //Creates an associative array where key is project id and value is role of that user in that project
         foreach ($request->projects as $project) {
-            $syncData[$project['id']] = ['role' => $project['role']];
+            if(!array_key_exists($project['id'], $existingAssignments)) {
+                $syncData[$project['id']] = ['role' => $project['role']];
+                $response[] = response()->json(['message' => 'Project Assigned Successfully']);
+            }else{
+                $response[]= response()->json(['message' => 'Project already assigned']);
+            }
         }
 
         //Syncs the prepared projects with roles with the corresponding user id in the pivot table
         $user->projects()->syncWithoutDetaching($syncData);
     }
 
+    public function removeFromProject(User $user, $projects)
+    {
+        $response = [];
+        $existingAssignments = $user->projects()->pluck('project_id')->toArray();
+
+        foreach ($projects as $project) {
+            if (in_array($project['id'], $existingAssignments)) {
+                // Detach the project from the user
+                $user->projects()->detach($project['id']);
+                $response[] = ['message' => "Project with ID {$project['id']} removed successfully"];
+            } else {
+                $response[] = ['message' => "Project with ID {$project['id']} not found for this user"];
+            }
+        }
+
+        return $response;
+    }
+
+    public function removeFromDepartment(User $user, $departments)
+    {
+        $response = [];
+        $existingAssignments = $user->departments()->pluck('department_id')->toArray();
+
+        foreach ($departments as $department) {
+            if (in_array($department['id'], $existingAssignments)) {
+                // Detach the department from the user
+                $user->departments()->detach($department['id']);
+                $response[] = ['message' => "Department with ID {$department['id']} removed successfully"];
+            } else {
+                $response[] = ['message' => "Department with ID {$department['id']} not found for this user"];
+            }
+        }
+
+        return $response;
+    }
 
 
     public function updateUser($data, $user)
