@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['admin'])->group(function () {  // 'admin' middleware checks for admin role
         Route::resource('projects', ProjectController::class);
         Route::resource('departments', DepartmentController::class);
-        Route::resource('users', UserController::class)->except('destroy');
+//        Route::resource('users', UserController::class)->except('destroy');
         Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
         Route::get('employees', [UserController::class, 'getEmployees']);
         Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
@@ -40,8 +40,9 @@ Route::post('/assign-users/{department}', [DepartmentController::class, 'assignU
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
+Route::resource('users', UserController::class)->except('destroy');
 
-
+route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 

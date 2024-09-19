@@ -60,6 +60,46 @@ class DepartmentController extends Controller
 //        ]);
 
     }
+    public function updateUserPosition(Department $department, Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'required|integer|exists:users,id',
+            'users.*.position' => 'required|string|max:255',
+        ]);
+
+        // Call the service to update the user roles
+        $response = $this->departmentService->updateUserPosition($department, $request->users);
+
+        // Return the response
+        return response()->json($response);
+    }
+
+//    public function updateUserPosition($departmentId, Request $request)
+//    {
+//        // Fetch the department manually
+//        $department = Department::find($departmentId);
+//
+//        // Check if the department was found
+//        if (!$department) {
+//            return response()->json(['message' => 'Department not found'], 404);
+//        }
+//
+//        // Validate the incoming request
+//        $request->validate([
+//            'users' => 'required|array',
+//            'users.*.id' => 'required|integer|exists:users,id',
+//            'users.*.position' => 'required|string|max:255',
+//        ]);
+//
+//        // Call the service to update the user roles
+//        $response = $this->departmentService->updateUserPosition($department, $request->users);
+//
+//        // Return the response
+//        return response()->json($response);
+//    }
+
 
     /**
      * Display the specified resource.

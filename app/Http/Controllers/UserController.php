@@ -59,11 +59,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         try {
             //Show one user, returns selected user
-            return $this->userService->getUserById($id);
+            return $this->userService->getUserById($user->id);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);
         } catch (\Exception) {
