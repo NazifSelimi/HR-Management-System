@@ -51,7 +51,8 @@ class ProjectService
         $response = [];
 
         // Get existing assignments for the project (pluck user_id and their role)
-        $existingAssignments = $project->users()->pluck('user_id', 'role')->toArray();
+        $existingAssignments = $project->users()->pluck('projects_users.role', 'user_id')->toArray();
+
 
         // Loop through the users from the request
         foreach ($request->users as $user) {
