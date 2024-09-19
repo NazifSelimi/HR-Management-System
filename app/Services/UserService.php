@@ -86,6 +86,41 @@ class UserService
         $user->projects()->syncWithoutDetaching($syncData);
     }
 
+    public function removeFromProject(User $user, $projects)
+    {
+        $response = [];
+        $existingAssignments = $user->projects()->pluck('project_id')->toArray();
+
+        foreach ($projects as $project) {
+            if (in_array($project['id'], $existingAssignments)) {
+                // Detach the project from the user
+                $user->projects()->detach($project['id']);
+                $response[] = ['message' => "Project with ID {$project['id']} removed successfully"];
+            } else {
+                $response[] = ['message' => "Project with ID {$project['id']} not found for this user"];
+            }
+        }
+
+        return $response;
+    }
+
+    public function removeFromDepartment(User $user, $departments)
+    {
+        $response = [];
+        $existingAssignments = $user->departments()->pluck('department_id')->toArray();
+
+        foreach ($departments as $department) {
+            if (in_array($department['id'], $existingAssignments)) {
+                // Detach the department from the user
+                $user->departments()->detach($department['id']);
+                $response[] = ['message' => "Department with ID {$department['id']} removed successfully"];
+            } else {
+                $response[] = ['message' => "Department with ID {$department['id']} not found for this user"];
+            }
+        }
+
+        return $response;
+    }
 
 
     public function updateUser($data, $user)

@@ -5,12 +5,14 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\VacationController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Get authenticated user
+// Public routes
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+
+// Authenticated user route (fetch current user)
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -18,44 +20,51 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 // Authenticated routes
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    // Admin routes - restricted to admin role
+    // Admin-specific routes
     Route::middleware(['admin'])->group(function () {
 
-        // Projects management
+        // Project management routes
         Route::resource('projects', ProjectController::class);
 
-        // Departments management
+        // Department management routes
         Route::resource('departments', DepartmentController::class);
 
-        // Users management
+        // User management routes (admin can manage users except delete)
         Route::resource('users', UserController::class)->except('destroy');
-        Route::delete('/user-delete/{id}', [UserController::class, 'destroy']);
+        Route::delete('/user-delete/{id}', [UserController::class, 'destroy']); // Custom delete route
 
-        // Assignments
+        // Employees-related routes
+        Route::get('employees', [UserController::class, 'getEmployees']);
+
+        // Assignment routes (assign departments/projects to users)
         Route::post('assign-departments/{user}', [UserController::class, 'assignDepartments']);
         Route::post('assign-projects/{user}', [UserController::class, 'assignProjects']);
+        Route::post('/assign-users/{project}', [ProjectController::class, 'assignUsers']);
         Route::post('/assign-users/{department}', [DepartmentController::class, 'assignUsers']);
+        Route::post('/user/{user}/remove-projects', [UserController::class, 'removeFromProject']);
+        Route::post('/user/{user}/remove-departments', [UserController::class, 'removeFromDepartment']);
 
         // Search functionality
         Route::post('/search', [SearchController::class, 'search']);
 
-        // Days Off (Vacation) management
+        // Days Off (Vacation) management for admin
         Route::get('/vacation', [DaysOffController::class, 'index']);
         Route::patch('/vacation/{days_off}', [DaysOffController::class, 'update']);
     });
 
     // Employee-specific routes
     Route::get('/employee-projects', [ProjectController::class, 'getEmployeeProjects']);
-    Route::post('/request-vacation', [DaysOffController::class, 'store']);
     Route::get('/employee-vacation', [DaysOffController::class, 'getEmployeeDaysOff']);
+    Route::get('/employee-departments', [DepartmentController::class, 'getEmployeeDepartments']);
 
-    // User-specific routes
+    // View specific project/department by employee
     Route::get('/view-project/{project}', [ProjectController::class, 'getEmployeeProjectById']);
+    Route::get('/view-department/{department}', [DepartmentController::class, 'getEmployeeDepartmentsById']);
 
-    // Update user position in department
-    Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
+    // Request vacation (for employees)
+    Route::post('/request-vacation', [DaysOffController::class, 'store']);
 
-    // Authentication routes
+    // Logout route
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
+

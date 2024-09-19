@@ -77,6 +77,18 @@ class ProjectController extends Controller
             return \response()->json(['message' => 'Something went wrong while fetching the project'], 500);
         }
     }
+    public function assignUsers(Project $project, Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'required|exists:users,id',
+            'users.*.role' => 'required|string',
+        ]);
+
+        // Call the service function to handle user assignments
+        return $this->projectService->assignUsers($project, $request);
+    }
 
     /**
      * Update the specified resource in storage.
