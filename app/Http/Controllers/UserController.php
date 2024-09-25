@@ -9,6 +9,8 @@ use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use PHPUnit\Exception;
 
 class UserController extends Controller
@@ -48,14 +50,35 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         try {
+            $data = $request->validated();
+            $data['password'] = Hash::make('password');
             //Call create function to store a new user, returns the user created
-            $this->userService->create($request->validated());
+            $this->userService->create($data);
             return response()->json([
-                'message' => "User created successfully",
+                'message' => "User created successfully.",
             ], 201);
-        } catch (\Exception) {
-            return response()->json(['message' => 'An error occurred while creating the user'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => "Something went wrong while trying to create user."], 500);
         }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
+
+        // Check if the user is required to change their password
+        if (!$user->must_change_password) {
+            return response()->json(['message' => 'Password change not required'], 400);
+        }
+
+        // Validate the new password
+        $request->validate([
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $this->userService->updatePassword($user, $request->password);
+
+        return response()->json(['message' => 'Password updated successfully']);
     }
 
     /**
@@ -126,6 +149,7 @@ class UserController extends Controller
 
         return response()->json($response);
     }
+
     /**
      * Update the specified resource in storage.
      */

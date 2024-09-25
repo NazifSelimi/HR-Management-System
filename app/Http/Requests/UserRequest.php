@@ -28,7 +28,6 @@ class UserRequest extends FormRequest
             'city' => ['required', 'string'],
             'address' => ['required', 'string'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
             'role' => ['required', 'string'],
         ];
     }
