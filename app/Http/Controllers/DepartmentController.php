@@ -62,6 +62,24 @@ class DepartmentController extends Controller
 //        ]);
 
     }
+
+    public function assignProjects(Request $request, Department $department)
+    {
+        //Expect and input of and array of objects that consists of a user id and a position
+        $request->validate([
+            'projects' => 'required|array',
+            'projects.*.id' => 'exists:users,id',
+        ]);
+
+        //Stores the validated users with positions in the pivot table
+        return $this->departmentService->assignProjects($department, $request);
+//        return response()->json([
+//            'message' => 'Users and positions assigned successfully',
+//            'department' => $department->load('users') // Load the users relationship
+//        ]);
+
+    }
+
     public function updateUserPosition(Department $department, Request $request)
     {
         // Validate the incoming request

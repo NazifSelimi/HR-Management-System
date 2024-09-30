@@ -60,6 +60,30 @@ class DepartmentService
         $department->users()->syncWithoutDetaching($syncData);
         return $response;
     }
+
+    public function assignProjects($department, $request)
+    {
+        $syncData = [];
+        $response = [];
+        $existingAssignments = $department->projects()->pluck('project_id')->toArray();
+
+        //Creates an associative array where key is user id and value is position of that user in that department
+        foreach ($request->projects as $project) {
+
+            if (!array_key_exists($project['id'], $existingAssignments)) {
+
+                $syncData[$project['id']] = ['project_id' => $project['id']];
+                $response[] = response()->json(['message' => 'Project assigned successfully.']);
+            } else {
+                $response[] = response()->json(['message' => 'This project is already assigned to this department.']);
+            }
+        }
+
+        //Syncs the prepared users with positions with the corresponding department id in the pivot table
+        $department->projects()->syncWithoutDetaching($syncData);
+        return $response;
+    }
+
     public function updateUserPosition(Department $department, $users)
     {
         $updateData = [];
@@ -84,8 +108,6 @@ class DepartmentService
 
         return $response;
     }
-
-
 
 
     public function update($data, $department)

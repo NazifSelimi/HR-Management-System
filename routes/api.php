@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
+
 
 // Authenticated user route (fetch current user)
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
