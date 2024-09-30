@@ -44,7 +44,7 @@ class DaysOffService
         DB::beginTransaction();
 
         //If $status exists and status of specific request is different from the input of the admin (accepted or not)
-        if ($status && $daysOff->status !== $status && $status === "accept") {
+        if ($daysOff->status !== $status && $status === "accept") {
 
             $daysOff->status = $status;           //update status of the days off request
 
