@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Request vacation (for employees)
     Route::post('/request-vacation', [DaysOffController::class, 'store']);
 
-    Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
+    Route::patch('/profile/update/{user}', [UserController::class, 'updateProfile']);
 
     Route::patch('/update-password/', [UserController::class, 'updatePassword']);
 
