@@ -30,12 +30,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Department management routes
         Route::resource('departments', DepartmentController::class);
+        Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
         Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
         Route::post('/assign-departments-projects/{project}', [ProjectController::class, 'assignDepartments']);
 
-        Route::patch('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
-        Route::patch('/projects/{project}/update-user-role', [ProjectController::class, 'updateUserRole']);
-
+        // User management routes (admin can manage users except delete)
+        Route::resource('users', UserController::class)->except('destroy');
+//        Route::delete('/user-delete/{user}', [UserController::class, 'destroy']); // Custom delete route
         // User management routes
 
         // Employees-related routes
@@ -50,6 +51,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/user/{user}/remove-projects', [UserController::class, 'removeFromProject']);
         Route::post('/user/{user}/remove-departments', [UserController::class, 'removeFromDepartment']);
 
+        // Search functionality
+        Route::post('/search', [SearchController::class, 'search']);
 
         // Days Off (Vacation) management for admin
         Route::get('/vacation', [DaysOffController::class, 'index']);
