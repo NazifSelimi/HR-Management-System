@@ -45,6 +45,7 @@ class ProjectService
 
         return $project;
     }
+
     public function assignUsers($project, Request $request)
     {
         $syncData = [];
@@ -70,9 +71,37 @@ class ProjectService
         $project->users()->syncWithoutDetaching($syncData);
 
         // Return the response
-        return response()->json(['message' => 'Users assigned successfully', 'project' => $project->load('users')]);
+        return $response;
     }
 
+
+    public function assignDepartments($project, $request)
+    {
+        $syncData = [];
+        $response = [];
+
+        // Get existing assignments for the project (pluck user_id and their role)
+        $existingAssignments = $project->departments()->pluck('department_id')->toArray();
+
+
+        // Loop through the users from the request
+        foreach ($request->departments as $department) {
+            // If the user is not already assigned to the project
+            if (!array_key_exists($department['id'], $existingAssignments)) {
+                // Prepare the data for syncing (user ID and role)
+                $syncData[$department['id']] = ['department_id' => $department['id']];
+                $response[] = response()->json(['message' => 'Department assigned to Project Successfully']);
+            } else {
+                $response[] = response()->json(['message' => 'Department already assigned to this project']);
+            }
+        }
+
+        // Sync the prepared users with roles to the project
+        $project->departments()->syncWithoutDetaching($syncData);
+
+        // Return the response
+        return $response;
+    }
 
     public function update($data, $project)
     {

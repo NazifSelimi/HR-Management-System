@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
-Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
 
 
 // Authenticated user route (fetch current user)
@@ -32,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Department management routes
         Route::resource('departments', DepartmentController::class);
         Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
+        Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
+        Route::post('/assign-departments-projects/{project}', [ProjectController::class, 'assignDepartments']);
 
         // User management routes
 
