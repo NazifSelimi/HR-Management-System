@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // User management routes (admin can manage users except delete)
         Route::resource('users', UserController::class)->except('destroy');
-        Route::delete('/user-delete/{id}', [UserController::class, 'destroy']); // Custom delete route
+        Route::delete('/user-delete/{user}', [UserController::class, 'destroy']); // Custom delete route
 
         // Employees-related routes
         Route::get('employees', [UserController::class, 'getEmployees']);
@@ -67,9 +67,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Request vacation (for employees)
     Route::post('/request-vacation', [DaysOffController::class, 'store']);
 
-Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
-
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
+    
 
 
     // Logout route
