@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -39,10 +40,22 @@ class UserService
 
     public function create($data)
     {
+        //DB::beginTransaction();
         //Create a new user record and store it in the database
         $user = new User($data);
         $user->save();
+        //DB::commit();
         return $user;
+    }
+
+    public function updatePassword($user, $password)
+    {
+        $user->password = Hash::make($password);
+        if ($user->must_change_password) {
+            $user->must_change_password = false; // User no longer required to change password
+
+        }
+        $user->save();
     }
 
     public function assignDepartments($user, $request)
@@ -51,13 +64,13 @@ class UserService
 
         $syncData = [];
         $response = []; //why array?
-        $existingAssignments = $user->departments()->pluck('department_id','position')->toArray();
+        $existingAssignments = $user->departments()->pluck('department_id', 'position')->toArray();
         //Creates an associative array where key is department id and value is position of that user in that department
         foreach ($request->departments as $department) {
             if (!array_key_exists($department['id'], $existingAssignments)) {
                 $syncData[$department['id']] = ['position' => $department['position']];
                 $response[] = response()->json(['message' => 'Department assigned Successfully']);
-            }else{
+            } else {
                 $response[] = response()->json(['message' => 'Department already assigned']);
             }
         }
@@ -74,11 +87,11 @@ class UserService
 
         //Creates an associative array where key is project id and value is role of that user in that project
         foreach ($request->projects as $project) {
-            if(!array_key_exists($project['id'], $existingAssignments)) {
+            if (!array_key_exists($project['id'], $existingAssignments)) {
                 $syncData[$project['id']] = ['role' => $project['role']];
                 $response[] = response()->json(['message' => 'Project Assigned Successfully']);
-            }else{
-                $response[]= response()->json(['message' => 'Project already assigned']);
+            } else {
+                $response[] = response()->json(['message' => 'Project already assigned']);
             }
         }
 

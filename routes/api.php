@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
+
 // Authenticated user route (fetch current user)
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::resource('users', UserController::class);
 
 // Authenticated routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -29,10 +31,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Department management routes
         Route::resource('departments', DepartmentController::class);
         Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
+        Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
+        Route::post('/assign-departments-projects/{project}', [ProjectController::class, 'assignDepartments']);
 
         // User management routes (admin can manage users except delete)
         Route::resource('users', UserController::class)->except('destroy');
-        Route::delete('/user-delete/{user}', [UserController::class, 'destroy']); // Custom delete route
+//        Route::delete('/user-delete/{user}', [UserController::class, 'destroy']); // Custom delete route
+        // User management routes
 
         // Employees-related routes
         Route::get('employees', [UserController::class, 'getEmployees']);
@@ -64,12 +69,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/view-department/{department}', [DepartmentController::class, 'getEmployeeDepartmentsById']);
     Route::get('/profile', [UserController::class, 'profile']);
 
+    // Search functionality
+    Route::post('/search', [SearchController::class, 'search']);
+
     // Request vacation (for employees)
     Route::post('/request-vacation', [DaysOffController::class, 'store']);
 
-    Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
-    
 
+    Route::patch('/profile/update/{user}', [UserController::class, 'updateProfile']);
+
+    Route::patch('/update-password/', [UserController::class, 'updatePassword']);
 
     // Logout route
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
