@@ -121,6 +121,22 @@ class ProjectController extends Controller
         }
     }
 
+    public function updateUserRole(Project $project, Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'users' => 'required|array',
+            'users.*.id' => 'required|integer|exists:users,id',
+            'users.*.role' => 'required|string|max:255',
+        ]);
+
+        // Call the service to update the user roles
+        $response = $this->projectService->updateUserRole($project, $request->users);
+
+        // Return the response
+        return response()->json($response);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

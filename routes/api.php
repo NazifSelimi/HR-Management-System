@@ -30,9 +30,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Department management routes
         Route::resource('departments', DepartmentController::class);
-        Route::post('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
         Route::post('/assign-projects-departments/{department}', [DepartmentController::class, 'assignProjects']);
         Route::post('/assign-departments-projects/{project}', [ProjectController::class, 'assignDepartments']);
+
+        Route::patch('/departments/{department}/update-user-position', [DepartmentController::class, 'updateUserPosition']);
+        Route::patch('/projects/{project}/update-user-role', [ProjectController::class, 'updateUserRole']);
 
         // User management routes
 

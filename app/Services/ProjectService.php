@@ -103,6 +103,31 @@ class ProjectService
         return $response;
     }
 
+    public function updateUserRole($project, $users)
+    {
+        $updateData = [];
+        $response = [];
+
+        // Get the list of user_ids already assigned to the department
+        $existingAssignments = $project->users()->pluck('user_id')->toArray();
+
+        // Create an associative array where key is user id and value is the updated position for that user in the department
+        foreach ($users as $user) {
+            if (in_array($user['id'], $existingAssignments)) {
+                // If user exists in the department, update their position
+                $updateData[$user['id']] = ['role' => $user['role']];
+                $response[] = ['message' => "User ID {$user['id']}: role updated successfully in department with ID {$project->id}."];
+            } else {
+                $response[] = ['message' => "User ID {$user['id']}: is not assigned to department with ID {$project->id}."];
+            }
+        }
+
+        // Syncs the users' positions, updating the pivot table for the corresponding department
+        $project->users()->syncWithoutDetaching($updateData);
+
+        return $response;
+    }
+
     public function update($data, $project)
     {
         // Update project fields
